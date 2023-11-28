@@ -1,5 +1,5 @@
 import "./App.css";
-import Experience from "./components/Experience";
+import { Experience } from "./components/Experience";
 function App() {
   return <Experience />;
 }
