@@ -1,12 +1,23 @@
 import { OrbitControls, Plane, MeshReflectorMaterial } from "@react-three/drei";
 import Lights from "./Lights";
-import { Physics } from "@react-three/rapier";
+import { Physics, RigidBody } from "@react-three/rapier";
 import Stage from "./Stage";
 import { Building } from "./Building";
-import Boxs from "./Boxs";
 import PlayerController from "./PlayerController";
+import { useGameStore } from "../store";
+import { useEffect } from "react";
 
 export default function World() {
+  console.log("renderd");
+  const start = useGameStore((state) => state.startGame);
+  const { level, currentModel, currentStage } = useGameStore((state) => ({
+    level: state.level,
+    currentModel: state.currentModel,
+    currentStage: state.currentStage,
+  }));
+  useEffect(() => {
+    start();
+  }, []);
   return (
     <>
       <OrbitControls makeDefault />
@@ -14,6 +25,7 @@ export default function World() {
       <color attach="background" args={["#ffffff"]} />
       <fog args={["#ffffff", 15, 40]} attach="fog" />
       <Physics debug>
+        {/* {console.log(level)} */}
         <mesh position={[0, -0.5, 0]} rotation={[-Math.PI * 0.5, 0, 0]}>
           <planeGeometry args={[50, 50]} />
           <MeshReflectorMaterial
@@ -36,8 +48,21 @@ export default function World() {
           scale={[5, 5, 5]}
           rotation-y={Math.PI}
         />
-        <Boxs />
+        {/* <Boxs /> */}
         <PlayerController />
+        {/* {console.log(level)} */}
+        {level &&
+          level[currentStage]?.map((obj, i) => (
+            <RigidBody
+              colliders="hull"
+              key={i + 20}
+              restitution={0.2}
+              friction={0.8}
+              position={[Math.random() * 5, 5, Math.random() * 5]}
+            >
+              {obj}
+            </RigidBody>
+          ))}
       </Physics>
     </>
   );

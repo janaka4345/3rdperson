@@ -1,20 +1,20 @@
 import { create } from "zustand";
-import { kanas } from "./constants";
+import models from "./components/solids";
 
 export const generateGameLevel = ({ nbStages }) => {
   const level = [];
 
   for (let i = 0; i < nbStages; i++) {
     const stage = [];
-    const nbOptions = 3 + 1;
+    const nbOptions = 3 + i;
     for (let j = 0; j < nbOptions; j++) {
-      let kana = null;
-      while (!kana || stage.includes(kana)) {
-        kana = kanas[Math.floor(Math.random() * kanas.length)];
+      let model = null;
+      while (!model || stage.includes(model)) {
+        model = models[Math.floor(Math.random() * models.length)];
       }
-      stage.push(kana);
+      stage.push(model);
     }
-    stage[Math.floor(Math.random() * stage.length)].correct = true;
+    // stage.push(stage[Math.floor(Math.random() * stage.length)]);
     level.push(stage);
   }
   return level;
@@ -23,20 +23,23 @@ export const generateGameLevel = ({ nbStages }) => {
 export const useGameStore = create((set) => ({
   level: null,
   currentStage: 0,
-  currentKana: null,
-  mode: "hiragana",
+  currentModel: null,
+  // mode: "hiragana",
   startGame: () => {
     const level = generateGameLevel({ nbStages: 5 });
-    const currentKana = level[0].find((kana) => kana.correct);
-    set({ level, currentStage: 0, currentKana });
+
+    // const currentModel = level[0].find((model) => model.correct);
+    const currentModel = level[0][level.length - 1];
+    set({ level, currentStage: 0, currentModel });
   },
   nextStage: () => {
     set((state) => {
       const currentStage = state.currentStage + 1;
-      const currentKana = state.level[currentStage].find(
-        (kana) => kana.correct,
-      );
-      return { currentStage, currentKana };
+      // const currentModel = state.level[currentStage].find(
+      //   (model) => model.correct,
+      // );
+      const currentModel = state.level[currentStage][state.level.length - 1];
+      return { currentStage, currentModel };
     });
   },
 }));
