@@ -2,6 +2,7 @@ import { Canvas } from "@react-three/fiber";
 import { KeyboardControls } from "@react-three/drei";
 import { useMemo } from "react";
 import World from "./World";
+import Menu from "./Menu";
 
 export const Controls = {
   forward: "forward",
@@ -34,6 +35,7 @@ export function Experience() {
       >
         <World />
       </Canvas>
+      <Menu />
     </KeyboardControls>
   );
 }

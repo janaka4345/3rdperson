@@ -6,9 +6,10 @@ import { Building } from "./Building";
 import PlayerController from "./PlayerController";
 import { useGameStore } from "../store";
 import { useEffect } from "react";
+import Models from "./Models";
 
 export default function World() {
-  console.log("renderd");
+  // console.log("renderd");
   const start = useGameStore((state) => state.startGame);
   const { level, currentModel, currentStage } = useGameStore((state) => ({
     level: state.level,
@@ -16,7 +17,7 @@ export default function World() {
     currentStage: state.currentStage,
   }));
   useEffect(() => {
-    start();
+    // start();
   }, []);
   return (
     <>
@@ -24,7 +25,7 @@ export default function World() {
       <axesHelper args={[2]} />
       <color attach="background" args={["#ffffff"]} />
       <fog args={["#ffffff", 15, 40]} attach="fog" />
-      <Physics debug>
+      <Physics>
         {/* {console.log(level)} */}
         <mesh position={[0, -0.5, 0]} rotation={[-Math.PI * 0.5, 0, 0]}>
           <planeGeometry args={[50, 50]} />
@@ -48,21 +49,11 @@ export default function World() {
           scale={[5, 5, 5]}
           rotation-y={Math.PI}
         />
-        {/* <Boxs /> */}
+
         <PlayerController />
-        {/* {console.log(level)} */}
-        {level &&
-          level[currentStage]?.map((obj, i) => (
-            <RigidBody
-              colliders="hull"
-              key={i + 20}
-              restitution={0.2}
-              friction={0.8}
-              position={[Math.random() * 5, 5, Math.random() * 5]}
-            >
-              {obj}
-            </RigidBody>
-          ))}
+        {/* last model of the level is the answer
+        so rendering level without answer */}
+        {level && <Models level={level} currentStage={currentStage} />}
       </Physics>
     </>
   );
